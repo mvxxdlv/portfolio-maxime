@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maxime Delavier — Portfolio BUT GEA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f1e3c; --navy-light: #1a2f57; --accent: #c8a96e;
+      --text: #1a1a2e; --text-muted: #5a6180; --bg: #fafaf8; --bg-card: #ffffff;
+      --border: rgba(15,30,60,0.1);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'Lato', system-ui, sans-serif;
+      --label: 'Montserrat', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.7; font-weight: 300; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 3rem; background: rgba(250,250,248,0.93); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--navy); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a { font-size: 0.82rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; font-family: var(--label); }
+    .nav-links a:hover { color: var(--navy); }
+
+    /* ADMIN BUTTON */
+    #admin-nav-btn { font-size: 0.75rem; color: var(--text-muted); background: none; border: 1px solid var(--border); border-radius: 4px; padding: 0.3rem 0.7rem; cursor: pointer; font-family: var(--label); letter-spacing: 0.05em; transition: all 0.2s; }
+    #admin-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    #admin-nav-btn.connected { border-color: #2ecc71; color: #2ecc71; }
+
+    /* HERO */
+    .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 6rem 3rem 4rem; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, transparent 70%); pointer-events: none; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.6s 0.1s forwards; font-family: var(--label); }
+    .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--accent); }
+    .hero h1 { font-family: var(--serif); font-size: clamp(2.8rem, 7vw, 5.5rem); color: var(--navy); line-height: 1.1; max-width: 700px; opacity: 0; animation: fadeUp 0.7s 0.2s forwards; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero-desc { margin-top: 1.5rem; font-size: 1rem; color: var(--text-muted); max-width: 480px; line-height: 1.8; opacity: 0; animation: fadeUp 0.7s 0.35s forwards; }
+    .hero-cta { margin-top: 2.5rem; display: flex; gap: 12px; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.7s 0.5s forwards; }
+    .btn { display: inline-block; padding: 0.75rem 1.6rem; border-radius: 4px; font-family: var(--sans); font-size: 0.85rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+    .btn-dark { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
+    .btn-dark:hover { background: var(--navy-light); }
+    .btn-outline { background: transparent; color: var(--navy); border: 1px solid var(--navy); }
+    .btn-outline:hover { background: var(--navy); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+    .btn-accent:hover { background: #b8934e; }
+
+    /* SECTIONS */
+    section { padding: 5rem 3rem; border-top: 1px solid var(--border); }
+    .section-label { font-family: var(--label); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; }
+    .section-label::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--accent); }
+    .section-title { font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--navy); line-height: 1.15; max-width: 500px; margin-bottom: 3rem; }
+
+    /* À PROPOS */
+    .about-solo { max-width: 620px; }
+    .about-solo p { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem; }
+    .erasmus-badge { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, rgba(200,169,110,0.12), rgba(15,30,60,0.06)); border: 1px solid var(--accent); border-radius: 10px; padding: 1rem 1.5rem; margin-top: 2rem; max-width: 420px; }
+    .erasmus-badge .flag { font-size: 1.8rem; }
+    .erasmus-badge .einfo { display: flex; flex-direction: column; }
+    .erasmus-badge .einfo strong { font-size: 0.9rem; color: var(--navy); font-weight: 700; }
+    .erasmus-badge .einfo span { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* COMPÉTENCES */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .skill-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; cursor: pointer; transition: border-color 0.2s, transform 0.2s; position: relative; }
+    .skill-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .skill-card.has-content { border-left: 3px solid var(--accent); }
+    .skill-hint { position: absolute; top: 12px; right: 12px; font-size: 0.65rem; color: var(--text-muted); opacity: 0; transition: opacity 0.2s; font-family: var(--label); }
+    .skill-card:hover .skill-hint { opacity: 1; }
+    .skill-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(200,169,110,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 1.1rem; }
+    .skill-card h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; font-family: var(--label); letter-spacing: 0.03em; }
+    .skill-short { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+    .skill-status { display: flex; align-items: center; gap: 6px; margin-top: 0.75rem; font-size: 0.75rem; color: var(--accent); font-family: var(--label); }
+    .skill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    /* CV */
+    .cv-block { background: var(--navy); border-radius: 12px; padding: 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .cv-block .cv-text h3 { font-family: var(--serif); font-size: 1.5rem; color: #fff; margin-bottom: 0.5rem; }
+    .cv-block .cv-text p { font-size: 0.9rem; color: rgba(255,255,255,0.65); max-width: 380px; line-height: 1.7; }
+    .cv-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+    .cv-upload-label { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 0.65rem 1.2rem; border-radius: 4px; font-size: 0.83rem; font-family: var(--sans); cursor: pointer; transition: background 0.2s; }
+    .cv-upload-label:hover { background: rgba(255,255,255,0.22); }
+    .cv-status { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+
+    /* CONTACT */
+    .contact-wrapper { max-width: 560px; }
+    .contact-wrapper > p { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .contact-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .contact-list li { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--text-muted); }
+    .contact-list .icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(200,169,110,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-muted); }
+    footer .logo { font-family: var(--serif); color: var(--navy); font-size: 0.95rem; }
+
+    /* MODAL COMPÉTENCE */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,20,40,0.55); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--bg-card); border-radius: 12px; width: 100%; max-width: 740px; max-height: 90vh; overflow-y: auto; padding: 2rem; position: relative; animation: modalIn 0.22s ease; }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
+    .modal-close:hover { color: var(--navy); }
+    .modal-intro { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+
+    /* BLOCS AC */
+    .ac-block { background: rgba(15,30,60,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+    .ac-title { font-family: var(--label); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+    .ac-num { background: var(--navy); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+    .ac-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width: 580px) { .ac-row { grid-template-columns: 1fr; } }
+    .field-label { font-family: var(--label); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); margin-bottom: 0.4rem; display: block; }
+    .modal textarea { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem; font-family: var(--sans); font-size: 0.85rem; color: var(--text); background: var(--bg); resize: vertical; min-height: 110px; transition: border-color 0.2s; }
+    .modal textarea:focus { outline: none; border-color: var(--navy); }
+    .modal textarea[readonly] { background: rgba(15,30,60,0.03); cursor: default; color: var(--text-muted); }
+
+    /* UPLOAD ZONE */
+    .upload-zone { border: 2px dashed var(--border); border-radius: 6px; padding: 0.9rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .upload-zone:hover { border-color: var(--accent); background: rgba(200,169,110,0.04); }
+    .upload-zone .uz-icon { font-size: 1.4rem; }
+    .upload-zone p { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .file-saved { display: flex; align-items: center; justify-content: space-between; background: rgba(15,30,60,0.05); border-radius: 6px; padding: 0.45rem 0.75rem; font-size: 0.8rem; color: var(--navy); margin-top: 0.5rem; gap: 8px; }
+    .file-saved span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-saved button { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.9rem; flex-shrink: 0; }
+    .file-saved button:hover { color: #c0392b; }
+    .file-preview { margin-top: 0.5rem; border-radius: 6px; overflow: hidden; max-height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(15,30,60,0.03); }
+    .file-preview img { max-width: 100%; max-height: 160px; object-fit: contain; border-radius: 6px; }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
+    .btn-save { background: var(--navy); color: #fff; border: none; padding: 0.65rem 1.5rem; border-radius: 4px; font-family: var(--label); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+    .btn-save:hover { background: var(--navy-light); }
+    .btn-cancel { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 0.65rem 1.2rem; border-radius: 4px; font-family: var(--sans); font-size: 0.85rem; cursor: pointer; }
+
+    /* MODAL LOGIN */
+    .login-modal { background: var(--bg-card); border-radius: 12px; width: 100%; max-width: 380px; padding: 2rem; position: relative; animation: modalIn 0.22s ease; }
+    .login-modal h2 { font-family: var(--serif); font-size: 1.4rem; color: var(--navy); margin-bottom: 0.4rem; }
+    .login-modal p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .login-field { margin-bottom: 1rem; }
+    .login-field label { font-family: var(--label); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 0.4rem; }
+    .login-field input { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem 0.8rem; font-family: var(--sans); font-size: 0.9rem; color: var(--text); background: var(--bg); transition: border-color 0.2s; }
+    .login-field input:focus { outline: none; border-color: var(--navy); }
+    .login-error { font-size: 0.8rem; color: #c0392b; margin-bottom: 1rem; display: none; }
+    .login-actions { display: flex; gap: 10px; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--navy); color: #fff; padding: 0.8rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-family: var(--sans); z-index: 9999; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #27ae60; }
+    .toast.error { background: #c0392b; }
+
+    /* LOADING */
+    .loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; } .nav-links { gap: 1rem; }
+      .hero { padding: 4rem 1.5rem 3rem; } section { padding: 3.5rem 1.5rem; }
+      .cv-block { flex-direction: column; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-logo">Maxime Delavier</span>
+    <ul class="nav-links">
+      <li><a href="#apropos">À propos</a></li>
+      <li><a href="#competences">Compétences</a></li>
+      <li><a href="#cv">Mon CV</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><button id="admin-nav-btn" onclick="handleAdminBtn()">Admin</button></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="accueil">
+    <span class="hero-eyebrow">BUT GEA · GEMA · 1ère année · 2025–2026</span>
+    <h1>Maxime<br><em>Delavier</em></h1>
+    <p class="hero-desc">Étudiant en BUT Gestion des Entreprises et des Administrations, parcours GEMA — Gestion Entrepreneuriale et Managériale. Motivé, rigoureux et impliqué dans chacun de mes projets.</p>
+    <div class="hero-cta">
+      <a href="#competences" class="btn btn-dark">Mes compétences</a>
+      <a href="#cv" class="btn btn-accent">Mon CV</a>
+      <a href="#contact" class="btn btn-outline">Me contacter</a>
+    </div>
+  </section>
+
+  <!-- À PROPOS -->
+  <section id="apropos">
+    <p class="section-label">À propos</p>
+    <h2 class="section-title">Qui suis-je ?</h2>
+    <div class="about-solo">
+      <p>Je suis actuellement en première année de BUT Gestion des Entreprises et des Administrations, dans le parcours GEMA — Gestion Entrepreneuriale et Managériale. Curieux et impliqué, je m'intéresse à la gestion d'entreprise, au management et à la stratégie organisationnelle.</p>
+      <p>Mon objectif est de mettre en pratique les compétences acquises en cours à travers des projets concrets, des études de cas et des expériences professionnelles.</p>
+      <div class="erasmus-badge">
+        <span class="flag">🍁</span>
+        <div class="einfo">
+          <strong>Erasmus+ — Canada</strong>
+          <span>Semestre à l'international prévu dans le cadre du BUT GEA. Une expérience enrichissante pour développer mes compétences interculturelles et managériales.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPÉTENCES -->
+  <section id="competences">
+    <p class="section-label">Compétences</p>
+    <h2 class="section-title">Ce que je maîtrise</h2>
+    <p id="skills-subtitle" style="font-size:0.85rem;color:var(--text-muted);margin-top:-2rem;margin-bottom:2rem;">Cliquez sur une compétence pour consulter les traces et argumentations.</p>
+    <div class="skills-grid">
+
+      <div class="skill-card" onclick="openSkillModal(0)" data-skill="0">
+        <span class="skill-hint">▶ voir détail</span>
+        <div class="skill-icon">🔄</div>
+        <h3>Compétence 1</h3>
+        <p class="skill-short">Identifier les processus de l'organisation</p>
+        <div class="skill-status" id="skill-status-0" style="display:none;"><span class="skill-dot"></span><span id="skill-status-text-0"></span></div>
+      </div>
+
+      <div class="skill-card" onclick="openSkillModal(1)" data-skill="1">
+        <span class="skill-hint">▶ voir détail</span>
+        <div class="skill-icon">🤝</div>
+        <h3>Compétence 2</h3>
+        <p class="skill-short">Identifier les relations entre les parties prenantes</p>
+        <div class="skill-status" id="skill-status-1" style="display:none;"><span class="skill-dot"></span><span id="skill-status-text-1"></span></div>
+      </div>
+
+      <div class="skill-card" onclick="openSkillModal(2)" data-skill="2">
+        <span class="skill-hint">▶ voir détail</span>
+        <div class="skill-icon">📊</div>
+        <h3>Compétence 3</h3>
+        <p class="skill-short">Identifier les éléments d'aide à la décision</p>
+        <div class="skill-status" id="skill-status-2" style="display:none;"><span class="skill-dot"></span><span id="skill-status-text-2"></span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CV -->
+  <section id="cv">
+    <p class="section-label">Curriculum Vitae</p>
+    <h2 class="section-title">Mon CV</h2>
+    <div class="cv-block">
+      <div class="cv-text">
+        <h3>Maxime Delavier</h3>
+        <p id="cv-block-desc">Le CV de Maxime sera disponible ici dès qu'il l'aura importé.</p>
+      </div>
+      <div class="cv-actions">
+        <label class="cv-upload-label" id="cv-upload-label" for="cv-file-input" style="display:none;">📎 &nbsp;Importer mon CV (PDF)</label>
+        <input type="file" id="cv-file-input" accept=".pdf" style="display:none;" />
+        <a id="cv-view-btn" class="btn btn-accent" target="_blank" style="display:none;">📄 Consulter mon CV</a>
+        <button id="cv-delete-btn" onclick="deleteCv()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-size:0.8rem;">🗑 Supprimer</button>
+        <span class="cv-status" id="cv-status">Chargement...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label">Contact</p>
+    <h2 class="section-title">Travaillons ensemble</h2>
+    <div class="contact-wrapper">
+      <p>Disponible pour un stage ou toute opportunité professionnelle en lien avec la gestion d'entreprise et le management. N'hésitez pas à me contacter.</p>
+      <ul class="contact-list">
+        <li><div class="icon">✉️</div><span>maximedelavier43@gmail.com</span></li>
+        <li><div class="icon">📞</div><span>07 66 88 61 70</span></li>
+        <li><div class="icon">📍</div><span>Somain, France</span></li>
+        <li><div class="icon">🎓</div><span>BUT GEA GEMA — Promotion 2025/2028</span></li>
+        <li><div class="icon">🍁</div><span>Erasmus+ Canada — semestre à l'international</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span class="logo">Maxime Delavier</span>
+    <span>Portfolio BUT GEA · 2026</span>
+  </footer>
+
+  <!-- MODAL CONNEXION ADMIN -->
+  <div class="modal-overlay" id="login-modal-overlay">
+    <div class="login-modal">
+      <button class="modal-close" onclick="closeLoginModal()">✕</button>
+      <h2>Espace admin</h2>
+      <p>Connectez-vous pour modifier le portfolio.</p>
+      <div class="login-field">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="votre@email.com" />
+      </div>
+      <div class="login-field">
+        <label>Mot de passe</label>
+        <input type="password" id="login-password" placeholder="••••••••" />
+      </div>
+      <p class="login-error" id="login-error">Email ou mot de passe incorrect.</p>
+      <div class="login-actions">
+        <button class="btn-save" id="login-btn" onclick="doLogin()">Se connecter</button>
+        <button class="btn-cancel" onclick="closeLoginModal()">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL COMPÉTENCE -->
+  <div class="modal-overlay" id="skill-modal-overlay">
+    <div class="modal">
+      <button class="modal-close" id="modal-close-btn">✕</button>
+      <p class="section-label" style="margin-bottom:0.3rem;" id="skill-modal-num"></p>
+      <h2 style="font-family:var(--serif);font-size:1.25rem;color:var(--navy);margin-bottom:0.4rem;line-height:1.3;" id="skill-modal-title"></h2>
+      <p class="modal-intro" id="skill-modal-intro"></p>
+      <div id="skill-traces-container"></div>
+      <div class="modal-actions" id="skill-modal-actions" style="display:none;">
+        <button class="btn-save" id="btn-save-skill">💾 Enregistrer</button>
+        <button class="btn-cancel" id="btn-cancel-skill">Annuler</button>
+      </div>
+      <div style="margin-top:1rem;" id="skill-modal-close-row">
+        <button class="btn-cancel" id="btn-close-skill">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMKZth86_L3FE96c5olGubNKFengpVs3A",
+      authDomain: "portfolio-maxime-77eb0.firebaseapp.com",
+      projectId: "portfolio-maxime-77eb0",
+      storageBucket: "portfolio-maxime-77eb0.firebasestorage.app",
+      messagingSenderId: "261865332580",
+      appId: "1:261865332580:web:1f124288ada418a1d62471"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ── ÉTAT GLOBAL ───────────────────────────────────────────────────────
+    window._isAdmin = false;
+    window._currentSkill = null;
+    window._skillsData = [null, null, null];
+
+    var skillDefs = [
+      {
+        icon: '🔄', num: 'Compétence 1',
+        title: "Identifier les processus de l'organisation",
+        acs: [
+          "Identifier les différents types d'enjeux",
+          "Qualifier les différents types d'organisation",
+          "Identifier les relations des acteurs au sein d'un processus"
+        ]
+      },
+      {
+        icon: '🤝', num: 'Compétence 2',
+        title: 'Identifier les relations entre les parties prenantes',
+        acs: [
+          "Identifier ses qualités individuelles",
+          "Identifier les relations interpersonnelles et collectives",
+          "Travailler en équipe avec méthode",
+          "Utiliser de façon pertinente les techniques de communication"
+        ]
+      },
+      {
+        icon: '📊', num: 'Compétence 3',
+        title: "Identifier les éléments d'aide à la décision",
+        acs: [
+          "Identifier les composantes du SIG",
+          "Rechercher, collecter et traiter les données brutes afin de produire et de diffuser une information structurée",
+          "Identifier les contraintes qui s'imposent à l'organisation",
+          "Identifier les risques"
+        ]
+      }
+    ];
+    window.skillDefs = skillDefs;
+
+    // ── TOAST ─────────────────────────────────────────────────────────────
+    window.showToast = function(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + (type || '');
+      setTimeout(function() { t.className = 'toast'; }, 3000);
+    };
+
+    // ── AUTH ──────────────────────────────────────────────────────────────
+    onAuthStateChanged(auth, function(user) {
+      window._isAdmin = !!user;
+      updateAdminUI();
+      loadAllData();
+    });
+
+    window.handleAdminBtn = function() {
+      if (window._isAdmin) {
+        signOut(auth).then(function() {
+          showToast('Déconnecté', '');
+        });
+      } else {
+        document.getElementById('login-modal-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        setTimeout(function() { document.getElementById('login-email').focus(); }, 100);
+      }
+    };
+
+    window.doLogin = function() {
+      var email = document.getElementById('login-email').value.trim();
+      var pwd = document.getElementById('login-password').value;
+      var btn = document.getElementById('login-btn');
+      var err = document.getElementById('login-error');
+      err.style.display = 'none';
+      btn.innerHTML = '<span class="loading-spinner"></span>Connexion...';
+      btn.disabled = true;
+      signInWithEmailAndPassword(auth, email, pwd)
+        .then(function() {
+          closeLoginModal();
+          showToast('Connecté en tant qu\'admin ✓', 'success');
+        })
+        .catch(function() {
+          err.style.display = 'block';
+          btn.innerHTML = 'Se connecter';
+          btn.disabled = false;
+        });
+    };
+
+    window.closeLoginModal = function() {
+      document.getElementById('login-modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('login-error').style.display = 'none';
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-btn').innerHTML = 'Se connecter';
+      document.getElementById('login-btn').disabled = false;
+    };
+
+    function updateAdminUI() {
+      var btn = document.getElementById('admin-nav-btn');
+      var subtitle = document.getElementById('skills-subtitle');
+      var cvLabel = document.getElementById('cv-upload-label');
+      var cvDesc = document.getElementById('cv-block-desc');
+      if (window._isAdmin) {
+        btn.textContent = 'Se déconnecter';
+        btn.classList.add('connected');
+        subtitle.textContent = 'Cliquez sur une compétence pour renseigner vos traces et argumentations par apprentissage critique.';
+        cvLabel.style.display = 'inline-flex';
+        cvDesc.textContent = 'Dépose ton CV au format PDF pour le rendre consultable directement depuis ton portfolio.';
+      } else {
+        btn.textContent = 'Admin';
+        btn.classList.remove('connected');
+        subtitle.textContent = 'Cliquez sur une compétence pour consulter les traces et argumentations.';
+        cvLabel.style.display = 'none';
+        cvDesc.textContent = 'Le CV de Maxime est disponible en consultation ci-dessous.';
+      }
+    }
+
+    // ── COMPRESSION IMAGE ─────────────────────────────────────────────────
+    function compressImage(dataUrl, maxW, maxH, quality) {
+      return new Promise(function(resolve) {
+        var img = new Image();
+        img.onload = function() {
+          var w = img.width, h = img.height;
+          if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+          if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality || 0.75));
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    // ── FIRESTORE HELPERS ─────────────────────────────────────────────────
+    async function saveSkillToFirestore(skillIdx, data) {
+      var docRef = doc(db, 'skills', 'skill_' + skillIdx);
+      await setDoc(docRef, { acs: data });
+    }
+
+    async function loadSkillFromFirestore(skillIdx) {
+      var docRef = doc(db, 'skills', 'skill_' + skillIdx);
+      var snap = await getDoc(docRef);
+      return snap.exists() ? snap.data().acs : null;
+    }
+
+    async function saveCvToFirestore(dataUrl, name) {
+      var docRef = doc(db, 'cv', 'main');
+      await setDoc(docRef, { dataUrl: dataUrl, name: name });
+    }
+
+    async function loadCvFromFirestore() {
+      var docRef = doc(db, 'cv', 'main');
+      var snap = await getDoc(docRef);
+      return snap.exists() ? snap.data() : null;
+    }
+
+    async function deleteCvFromFirestore() {
+      var docRef = doc(db, 'cv', 'main');
+      await deleteDoc(docRef);
+    }
+
+    // ── CHARGEMENT INITIAL ────────────────────────────────────────────────
+    async function loadAllData() {
+      // Charger les compétences
+      for (var i = 0; i < 3; i++) {
+        var data = await loadSkillFromFirestore(i);
+        window._skillsData[i] = data;
+      }
+      renderSkillCards();
+      // Charger le CV
+      var cv = await loadCvFromFirestore();
+      if (cv) {
+        showCvBtn(cv.dataUrl, cv.name);
+      } else {
+        document.getElementById('cv-status').textContent = 'Aucun CV importé pour l\'instant.';
+        document.getElementById('cv-view-btn').style.display = 'none';
+        document.getElementById('cv-delete-btn').style.display = 'none';
+      }
+    }
+
+    // ── CV ────────────────────────────────────────────────────────────────
+    document.getElementById('cv-file-input').addEventListener('change', async function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var status = document.getElementById('cv-status');
+      status.textContent = 'Importation en cours...';
+      var reader = new FileReader();
+      reader.onload = async function(ev) {
+        try {
+          await saveCvToFirestore(ev.target.result, file.name);
+          showCvBtn(ev.target.result, file.name);
+          showToast('CV importé avec succès ✓', 'success');
+        } catch(err) {
+          showToast('Erreur lors de l\'import du CV', 'error');
+          status.textContent = 'Erreur d\'importation.';
+        }
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    });
+
+    function showCvBtn(dataUrl, name) {
+      var btn = document.getElementById('cv-view-btn');
+      btn.href = dataUrl;
+      btn.setAttribute('download', name || 'CV_Maxime_Delavier.pdf');
+      btn.style.display = 'inline-block';
+      document.getElementById('cv-status').textContent = 'CV disponible : ' + (name || 'cv.pdf');
+      if (window._isAdmin) {
+        document.getElementById('cv-delete-btn').style.display = 'inline-block';
+      }
+    }
+
+    window.deleteCv = async function() {
+      if (!confirm('Supprimer le CV ?')) return;
+      try {
+        await deleteCvFromFirestore();
+        document.getElementById('cv-view-btn').style.display = 'none';
+        document.getElementById('cv-delete-btn').style.display = 'none';
+        document.getElementById('cv-status').textContent = 'Aucun CV importé pour l\'instant.';
+        showToast('CV supprimé', '');
+      } catch(err) {
+        showToast('Erreur lors de la suppression', 'error');
+      }
+    };
+
+    // ── MODAL COMPÉTENCE ──────────────────────────────────────────────────
+    window.openSkillModal = async function(i) {
+      window._currentSkill = i;
+      var s = skillDefs[i];
+      var data = window._skillsData[i] || s.acs.map(function() { return { arg: '', file: null }; });
+
+      document.getElementById('skill-modal-num').textContent = s.num;
+      document.getElementById('skill-modal-title').textContent = s.title;
+      document.getElementById('skill-modal-intro').textContent = window._isAdmin
+        ? 'Pour chaque apprentissage critique, ajoutez une trace et rédigez votre argumentation.'
+        : 'Consultez les traces et argumentations déposées pour chaque apprentissage critique.';
+
+      var actionsEl = document.getElementById('skill-modal-actions');
+      var closeRow = document.getElementById('skill-modal-close-row');
+      if (window._isAdmin) {
+        actionsEl.style.display = 'flex';
+        closeRow.style.display = 'none';
+      } else {
+        actionsEl.style.display = 'none';
+        closeRow.style.display = 'block';
+      }
+
+      var container = document.getElementById('skill-traces-container');
+      container.innerHTML = '';
+
+      s.acs.forEach(function(ac, j) {
+        var d = data[j] || { arg: '', file: null };
+        var block = document.createElement('div');
+        block.className = 'ac-block';
+
+        var fileHtml = '';
+        if (d.file) {
+          var isImage = d.file.type && d.file.type.startsWith('image/');
+          var previewHtml = isImage
+            ? '<div class="file-preview"><img src="' + d.file.dataUrl + '" alt="trace" /></div>'
+            : '';
+          var deleteBtn = window._isAdmin ? '<button type="button" onclick="removeFile(' + j + ')">✕</button>' : '';
+          fileHtml = '<div class="file-saved" id="file-saved-' + j + '"><span>📄 ' + d.file.name + '</span>' + deleteBtn + '</div>' + previewHtml;
+        } else {
+          fileHtml = '<div class="file-saved" id="file-saved-' + j + '" style="display:none;"></div>';
+        }
+
+        var uploadZoneHtml = window._isAdmin
+          ? '<div class="upload-zone" onclick="triggerFileInput(' + j + ')"><div class="uz-icon">📎</div><p>Cliquer pour ajouter un fichier</p></div><input type="file" id="ac-file-' + j + '" accept="image/*,.pdf" style="display:none;" onchange="handleAcFile(event,' + j + ')" />'
+          : (!d.file ? '<p style="font-size:0.8rem;color:var(--text-muted);font-style:italic;">Aucune trace déposée.</p>' : '');
+
+        var argHtml = window._isAdmin
+          ? '<textarea id="ac-arg-' + j + '" placeholder="En quoi ce document prouve cet apprentissage critique ?">' + (d.arg || '') + '</textarea>'
+          : '<textarea id="ac-arg-' + j + '" readonly>' + (d.arg || 'Aucune argumentation rédigée.') + '</textarea>';
+
+        block.innerHTML =
+          '<div class="ac-title"><span class="ac-num">' + (j+1) + '</span>' + ac + '</div>' +
+          '<div class="ac-row">' +
+            '<div><label class="field-label">Trace (image ou PDF)</label>' + uploadZoneHtml + fileHtml + '</div>' +
+            '<div><label class="field-label">Argumentation</label>' + argHtml + '</div>' +
+          '</div>';
+
+        container.appendChild(block);
+      });
+
+      document.getElementById('skill-modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.triggerFileInput = function(j) {
+      document.getElementById('ac-file-' + j).click();
+    };
+
+    window.handleAcFile = async function(e, j) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = async function(ev) {
+        var dataUrl = ev.target.result;
+        var isImage = file.type.startsWith('image/');
+        if (isImage) {
+          dataUrl = await compressImage(dataUrl, 1200, 900, 0.75);
+        }
+        var fileData = { name: file.name, dataUrl: dataUrl, type: file.type };
+        if (!window._skillsData[window._currentSkill]) {
+          window._skillsData[window._currentSkill] = skillDefs[window._currentSkill].acs.map(function() { return { arg: '', file: null }; });
+        }
+        window._skillsData[window._currentSkill][j].file = fileData;
+
+        var savedEl = document.getElementById('file-saved-' + j);
+        savedEl.innerHTML = '<span>📄 ' + file.name + '</span><button type="button" onclick="removeFile(' + j + ')">✕</button>';
+        savedEl.style.display = 'flex';
+
+        // Afficher preview si image
+        var existing = savedEl.nextElementSibling;
+        if (existing && existing.classList.contains('file-preview')) existing.remove();
+        if (isImage) {
+          var preview = document.createElement('div');
+          preview.className = 'file-preview';
+          preview.innerHTML = '<img src="' + dataUrl + '" alt="trace" />';
+          savedEl.insertAdjacentElement('afterend', preview);
+        }
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    };
+
+    window.removeFile = function(j) {
+      if (!window._skillsData[window._currentSkill]) return;
+      window._skillsData[window._currentSkill][j].file = null;
+      var savedEl = document.getElementById('file-saved-' + j);
+      savedEl.innerHTML = '';
+      savedEl.style.display = 'none';
+      var next = savedEl.nextElementSibling;
+      if (next && next.classList.contains('file-preview')) next.remove();
+    };
+
+    function closeSkillModal() {
+      document.getElementById('skill-modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      window._currentSkill = null;
+    }
+
+    async function saveSkill() {
+      if (window._currentSkill === null) return;
+      var i = window._currentSkill;
+      if (!window._skillsData[i]) {
+        window._skillsData[i] = skillDefs[i].acs.map(function() { return { arg: '', file: null }; });
+      }
+      skillDefs[i].acs.forEach(function(ac, j) {
+        var argEl = document.getElementById('ac-arg-' + j);
+        if (argEl) window._skillsData[i][j].arg = argEl.value.trim();
+      });
+      var btn = document.getElementById('btn-save-skill');
+      btn.innerHTML = '<span class="loading-spinner"></span>Enregistrement...';
+      btn.disabled = true;
+      try {
+        await saveSkillToFirestore(i, window._skillsData[i]);
+        showToast('Compétence enregistrée ✓', 'success');
+        renderSkillCards();
+        closeSkillModal();
+      } catch(err) {
+        showToast('Erreur lors de la sauvegarde', 'error');
+      }
+      btn.innerHTML = '💾 Enregistrer';
+      btn.disabled = false;
+    }
+
+    function renderSkillCards() {
+      skillDefs.forEach(function(s, i) {
+        var card = document.querySelector('[data-skill="' + i + '"]');
+        if (!card) return;
+        var data = window._skillsData[i] || [];
+        var filled = data.filter(function(d) { return d && (d.file || d.arg); }).length;
+        card.classList.toggle('has-content', filled > 0);
+        var statusEl = document.getElementById('skill-status-' + i);
+        var textEl = document.getElementById('skill-status-text-' + i);
+        if (filled > 0) {
+          textEl.textContent = filled + '/' + s.acs.length + ' AC renseigné(s)';
+          statusEl.style.display = 'flex';
+        } else {
+          statusEl.style.display = 'none';
+        }
+      });
+    }
+    window.renderSkillCards = renderSkillCards;
+
+    // ── EVENTS ────────────────────────────────────────────────────────────
+    document.getElementById('modal-close-btn').addEventListener('click', closeSkillModal);
+    document.getElementById('btn-cancel-skill').addEventListener('click', closeSkillModal);
+    document.getElementById('btn-close-skill').addEventListener('click', closeSkillModal);
+    document.getElementById('btn-save-skill').addEventListener('click', saveSkill);
+    document.getElementById('skill-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeSkillModal();
+    });
+    document.getElementById('login-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) window.closeLoginModal();
+    });
+    document.getElementById('login-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') window.doLogin();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeSkillModal(); window.closeLoginModal(); }
+    });
+
+  </script>
+</body>
+</html>
