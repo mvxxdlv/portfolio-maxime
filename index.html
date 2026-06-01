@@ -144,6 +144,16 @@
     .login-error { font-size: 0.8rem; color: #c0392b; margin-bottom: 1rem; display: none; }
     .login-actions { display: flex; gap: 10px; }
 
+    /* VISIONNEUSE PLEIN ÉCRAN */
+    .viewer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
+    .viewer-overlay.open { display: flex; }
+    .viewer-close { position: absolute; top: 1rem; right: 1.2rem; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; z-index: 2001; opacity: 0.8; transition: opacity 0.2s; }
+    .viewer-close:hover { opacity: 1; }
+    .viewer-name { color: rgba(255,255,255,0.6); font-size: 0.8rem; font-family: var(--label); margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+    .viewer-content { max-width: 95vw; max-height: 88vh; display: flex; align-items: center; justify-content: center; }
+    .viewer-content img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 6px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .viewer-content iframe { width: 88vw; height: 85vh; border: none; border-radius: 6px; }
+
     /* TOAST */
     .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--navy); color: #fff; padding: 0.8rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-family: var(--sans); z-index: 9999; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
     .toast.show { opacity: 1; transform: translateY(0); }
@@ -319,6 +329,13 @@
     </div>
   </div>
 
+  <!-- VISIONNEUSE PLEIN ÉCRAN -->
+  <div class="viewer-overlay" id="viewer-overlay">
+    <button class="viewer-close" id="viewer-close">✕</button>
+    <div class="viewer-name" id="viewer-name"></div>
+    <div class="viewer-content" id="viewer-content"></div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
@@ -361,7 +378,6 @@
         title: 'Identifier les relations entre les parties prenantes',
         acs: [
           "Identifier ses qualités individuelles",
-          "Identifier les relations interpersonnelles et collectives",
           "Travailler en équipe avec méthode",
           "Utiliser de façon pertinente les techniques de communication"
         ]
@@ -372,12 +388,46 @@
         acs: [
           "Identifier les composantes du SIG",
           "Rechercher, collecter et traiter les données brutes afin de produire et de diffuser une information structurée",
-          "Identifier les contraintes qui s'imposent à l'organisation",
-          "Identifier les risques"
+          "Identifier les contraintes qui s'imposent à l'organisation"
         ]
       }
     ];
     window.skillDefs = skillDefs;
+
+    // ── VISIONNEUSE PLEIN ÉCRAN ───────────────────────────────────────────
+    window.openViewer = function(dataUrl, name, type) {
+      var overlay = document.getElementById('viewer-overlay');
+      var content = document.getElementById('viewer-content');
+      var nameEl = document.getElementById('viewer-name');
+      nameEl.textContent = name || 'Fichier';
+      content.innerHTML = '';
+      var isImage = type && type.startsWith('image/');
+      if (isImage) {
+        var img = document.createElement('img');
+        img.src = dataUrl;
+        img.alt = name;
+        content.appendChild(img);
+      } else {
+        var iframe = document.createElement('iframe');
+        iframe.src = dataUrl;
+        content.appendChild(iframe);
+      }
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+
+    document.getElementById('viewer-close').addEventListener('click', function() {
+      document.getElementById('viewer-overlay').classList.remove('open');
+      document.getElementById('viewer-content').innerHTML = '';
+      document.body.style.overflow = '';
+    });
+    document.getElementById('viewer-overlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('open');
+        document.getElementById('viewer-content').innerHTML = '';
+        document.body.style.overflow = '';
+      }
+    });
 
     // ── TOAST ─────────────────────────────────────────────────────────────
     window.showToast = function(msg, type) {
@@ -598,10 +648,11 @@
         if (d.file) {
           var isImage = d.file.type && d.file.type.startsWith('image/');
           var previewHtml = isImage
-            ? '<div class="file-preview"><img src="' + d.file.dataUrl + '" alt="trace" /></div>'
+            ? '<div class="file-preview" style="cursor:pointer;" onclick="openViewer(\'' + d.file.dataUrl + '\',\'' + d.file.name + '\',\'' + d.file.type + '\')"><img src="' + d.file.dataUrl + '" alt="trace" title="Cliquer pour agrandir" /></div>'
             : '';
           var deleteBtn = window._isAdmin ? '<button type="button" onclick="removeFile(' + j + ')">✕</button>' : '';
-          fileHtml = '<div class="file-saved" id="file-saved-' + j + '"><span>📄 ' + d.file.name + '</span>' + deleteBtn + '</div>' + previewHtml;
+          var clickable = 'style="cursor:pointer;" onclick="openViewer(\'' + d.file.dataUrl + '\',\'' + d.file.name + '\',\'' + (d.file.type||'') + '\')"';
+          fileHtml = '<div class="file-saved" id="file-saved-' + j + '" ' + clickable + '><span>📄 ' + d.file.name + ' <small style="color:var(--accent);font-size:0.7rem;">— cliquer pour voir</small></span>' + deleteBtn + '</div>' + previewHtml;
         } else {
           fileHtml = '<div class="file-saved" id="file-saved-' + j + '" style="display:none;"></div>';
         }
@@ -649,8 +700,10 @@
         window._skillsData[window._currentSkill][j].file = fileData;
 
         var savedEl = document.getElementById('file-saved-' + j);
-        savedEl.innerHTML = '<span>📄 ' + file.name + '</span><button type="button" onclick="removeFile(' + j + ')">✕</button>';
+        savedEl.innerHTML = '<span>📄 ' + file.name + ' <small style="color:var(--accent);font-size:0.7rem;">— cliquer pour voir</small></span><button type="button" onclick="removeFile(' + j + ')">✕</button>';
         savedEl.style.display = 'flex';
+        savedEl.style.cursor = 'pointer';
+        savedEl.onclick = function(ev) { if (ev.target.tagName !== 'BUTTON') openViewer(dataUrl, file.name, file.type); };
 
         // Afficher preview si image
         var existing = savedEl.nextElementSibling;
